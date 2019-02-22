@@ -116,7 +116,7 @@ void  ofx3jHistogramBase::draw(
 			if (gui.flags.peakLine) { // vert
 				if (iOff == getIndexAtMaxValue()) {
 					ofSetColor(c, 0.9 * 255);
-					ofDrawLine(ofPoint(p1.x, p1.y - h * 0.9), ofPoint(p1.x, p1.y - h));
+					ofDrawLine(ofPoint(p1.x + xStep/2, p1.y - h * 0.9), ofPoint(p1.x + xStep / 2, p1.y - h)); //  + xStep/2 keep in middle of rect
 				}
 			}
 

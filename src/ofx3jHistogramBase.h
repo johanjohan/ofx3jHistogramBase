@@ -10,11 +10,19 @@
 	20190221
 		some clean up
 		example with ofPixels
+		commented out ofLog()
+		#undef NDEBUG to keep asserts in release
+		keep vertical peakline in center of bar
 
 */
 
 #include "ofMain.h"
 #include "ofxGui.h"
+
+#if 1					// keep assert() in release as well
+#undef NDEBUG
+#include <assert.h>		// reinclude the header to update the definition of assert()
+#endif
 
 class ofx3jHistogramBase {
 protected:
@@ -151,7 +159,7 @@ public:
 	void setIndexDrawStart(const size_t &_startBinIndex) { // incase we want to start drawing from another value than 0
 		assert(_startBinIndex < getSize());
 		hist.indexDrawStart = _startBinIndex;
-		ofLogNotice(__FUNCTION__) << hist.indexDrawStart;
+		//ofLogNotice(__FUNCTION__) << hist.indexDrawStart;
 	}
 
 	void setMessage(const string &_msg) {
@@ -196,9 +204,8 @@ protected:
 	}
 
 	void setSize(const size_t &_numBins) {
-		assert(_numBins > 0);
 		zeroHistograms(_numBins);
-		cout << (__FUNCTION__) << ": hist.data.size(): " << hist.data.size() << endl;
+		//cout << (__FUNCTION__) << ": hist.data.size(): " << hist.data.size() << endl;
 	}
 
 	size_t mapToIndex(float value, float inputMin, float inputMax) {

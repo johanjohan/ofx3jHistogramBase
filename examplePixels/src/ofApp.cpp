@@ -2,7 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
 	ofSetVerticalSync(false);
+
 	videoGrab.setup(640, 480);
 	videoGrab.setDesiredFrameRate(30);
 

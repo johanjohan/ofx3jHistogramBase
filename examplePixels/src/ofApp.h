@@ -10,7 +10,7 @@
 class HistogramPixels : public ofx3jHistogramBase {
 
 public:
-	HistogramPixels() : ofx3jHistogramBase(361) { // num of bins, values from [0...360], a total of 361, can as well use lower or higher values
+	HistogramPixels() : ofx3jHistogramBase(36) { // 361, num of bins, values from [0...360], a total of 361, can as well use lower or higher values
 		gui.setup(__func__, 200); // name and gui width
 		gui.params.noiseThresh.setMax(0.05f); // adjust the slider max...
 	}
