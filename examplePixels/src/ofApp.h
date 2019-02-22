@@ -4,13 +4,13 @@
 #include "ofx3jHistogramBase.h"
 
 /*
-	example how to build your own derived class for special types
-	this example takes ofPixels and shows the color hue angles in a histogram
+	example how to build your own derived class for special data types
+	this example takes ofPixels and shows the color hue angles
 */
 class HistogramPixels : public ofx3jHistogramBase {
 
 public:
-	HistogramPixels() : ofx3jHistogramBase(361) { // values from [0...360], a total of 361
+	HistogramPixels() : ofx3jHistogramBase(361) { // num of bins, values from [0...360], a total of 361, can as well use lower or higher values
 		gui.setup(__func__, 200); // name and gui width
 		gui.params.noiseThresh.setMax(0.05f); // adjust the slider max...
 	}
@@ -55,7 +55,7 @@ public:
 		setMessage(ss.str());
 
 		// update gui labels
-		gui.labels.label1 = "max: " + ofToString(getMaxValuePercent(), 2) + " / 1.0";
+		gui.labels.label1 = "max: " + ofToString(getMaxValuePercent(), 2) + " of 1.0";
 		gui.labels.label2 = "fps: " + ofToString(ofGetFrameRate(), 1) + "Hz";
 	}
 

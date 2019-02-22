@@ -16,11 +16,11 @@
 		<peakBandPercent>0</peakBandPercent>
 		<emaAlphaPercent>0.8</emaAlphaPercent>
 		<steps>4</steps>
-		<amplify>2.33929</amplify>
+		<amplify>2.2398</amplify>
 	<noiseThresh>0</noiseThresh>
 	</params>
 <HistogramPixels/>
 <labels>
-		<UnknownName> fps: 1390.6</UnknownName>
+		<UnknownName>fps: 249.1Hz</UnknownName>
 	</labels>
 </HistogramPixels>

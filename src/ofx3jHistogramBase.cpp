@@ -22,7 +22,7 @@ void  ofx3jHistogramBase::draw(
 	int x = _x + _border;
 	int y = _y + _border;
 	assert(hist.data.size() > 0);
-	float xStep = w / float(hist.data.size());
+	float xStep = w / float(hist.data.size() - 0);
 
 	ofColor c = ofColor::red;
 	ofPushStyle();
@@ -50,19 +50,42 @@ void  ofx3jHistogramBase::draw(
 			ofPopStyle();
 		}
 
+		if (gui.flags.grid)
+		{
+			ofPoint p0;
+			ofPoint p1;
+			int numSegments;
+			ofSetColor(_colorGrid);
+
+			// eight
+			numSegments = 8;
+			p0.set(x, y + h);
+			p1.set(p0.x, p0.y - h / 6);
+			for (size_t i = 0; i <= numSegments; ++i){
+				if (i % 2){
+					p0.x = p1.x = x + i * w / numSegments;
+					ofDrawLine(p0, p1);
+				}
+
+			}
+
+			// quart
+			numSegments = 4;
+			p0.set(x, y + h);
+			p1.set(p0.x, p0.y - h / 3);
+			for (size_t i = 0; i <= numSegments; ++i){
+				p0.x = p1.x = x + i * w / numSegments;
+				ofDrawLine(p0, p1);
+			}
+		}
+
 		// plot bins
 		float maxVal = 0;
 		ofPoint p1(x, y + h);
-
-		size_t modQuart = (hist.data.size()) / 4.;
-		size_t modEigth = modQuart / 2;
-		if (modQuart % 2) {								// only plots correct if even, 24 - 12, bad plot 25 12
-			modEigth = hist.data.size();				// will never plot
-		}
-		assert(modQuart > 0 && modEigth > 0);
-
 		for (size_t i = 0; i < hist.data.size(); i++) // 256
 		{
+			p1.x = x + i * xStep; //p1.x += xStep;
+
 			size_t iOff = wrap<size_t>(
 				i + hist.indexDrawStart,
 				0,
@@ -77,22 +100,10 @@ void  ofx3jHistogramBase::draw(
 			else {
 				c = _colorBin;
 			}
-
-			if (gui.flags.grid) {
-				ofSetColor(_colorGrid);
-				if (iOff && !(iOff % modQuart)) {
-					ofDrawLine(p1, ofPoint(p1.x, p1.y - h / 3));
-				}
-				else if (iOff && !(iOff % modEigth)) {
-					ofDrawLine(p1, ofPoint(p1.x, p1.y - h / 6));
-				}
-			}
-
 			ofSetColor(c);
 
 			// bin bars
 			float val01 = ofMap(hist.data[iOff], 0, hist.maxValueLimit, 0, 1); // normalize
-
 			if (val01 >= gui.params.noiseThresh) 
 			{
 				assert(gui.params.amplify.get() > 0);
@@ -109,8 +120,6 @@ void  ofx3jHistogramBase::draw(
 				}
 			}
 
-			
-			p1.x = x + i * xStep; //p1.x += xStep;
 		}
 
 		if (gui.flags.peakLine) // horz

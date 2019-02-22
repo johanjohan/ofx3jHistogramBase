@@ -27,6 +27,7 @@ void ofApp::update(){
 	if (videoGrab.isFrameNew())
 	{
 		histogram.update(videoGrab.getPixels());
+		//histogram.setIndexDrawStart(size_t(ofGetElapsedTimef() / .333f) % histogram.getSize()); // slide for the fun of it
 	}
 }
 
