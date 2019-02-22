@@ -143,7 +143,7 @@ public:
 		return hist.indexAtMaxValue;
 	}
 
-	float getIndexAtMaxValuePercent() {
+	float getIndexPercentAtMaxValue() {
 		return getIndexAtMaxValue() / float(getSize() - 1);
 	}
 

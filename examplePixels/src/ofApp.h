@@ -10,7 +10,7 @@
 class HistogramPixels : public ofx3jHistogramBase {
 
 public:
-	HistogramPixels() : ofx3jHistogramBase(36) { // 361, num of bins, values from [0...360], a total of 361, can as well use lower or higher values
+	HistogramPixels() : ofx3jHistogramBase(12) { // 361, num of bins, values from [0...360], a total of 361, can as well use lower or higher values
 		gui.setup(__func__, 200); // name and gui width
 		gui.params.noiseThresh.setMax(0.05f); // adjust the slider max...
 	}
@@ -50,8 +50,9 @@ public:
 
 		// create text for messsage
 		stringstream ss;
-		ss << "getIndexAtMaxValue(): " << getIndexAtMaxValue() << endl;
-		ss << "getMaxValuePercent(): " << ofToString(getMaxValuePercent(), 2, 4, ' ') << "%";
+		ss << "getIndexAtMaxValue()       : " << getIndexAtMaxValue() << endl;
+		ss << "getIndexPercentAtMaxValue(): " << ofToString(getIndexPercentAtMaxValue(), 2, 4, ' ') << "%" << endl;
+		ss << "getMaxValuePercent()       : " << ofToString(getMaxValuePercent(), 2, 4, ' ') << "%";
 		setMessage(ss.str());
 
 		// update gui labels

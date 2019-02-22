@@ -5,7 +5,7 @@
 		<hue>1</hue>
 		<background>0</background>
 		<frame>1</frame>
-		<message>0</message>
+		<message>1</message>
 		<peakLine>1</peakLine>
 		<grid>1</grid>
 	<update>1</update>
@@ -15,12 +15,12 @@
 		<offsetScale>1</offsetScale>
 		<peakBandPercent>0</peakBandPercent>
 		<emaAlphaPercent>0.8</emaAlphaPercent>
-		<steps>8</steps>
-		<amplify>2.2398</amplify>
+		<steps>4</steps>
+		<amplify>1.39413</amplify>
 	<noiseThresh>0</noiseThresh>
 	</params>
 <HistogramPixels/>
 <labels>
-		<UnknownName>fps: 1896.7Hz</UnknownName>
+		<UnknownName>fps: 1691.1Hz</UnknownName>
 	</labels>
 </HistogramPixels>
