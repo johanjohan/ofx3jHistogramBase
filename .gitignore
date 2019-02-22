@@ -112,6 +112,7 @@ Desktop.ini
 *.vcxproj
 *.vcxproj.*
 .vs/
+.vs/*
 *.ico
 
 
