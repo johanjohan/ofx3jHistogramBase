@@ -1,0 +1,26 @@
+<HistogramPixels>
+	<flags>
+		<UnknownName>1970.2</UnknownName>
+		<draw>1</draw>
+		<hue>1</hue>
+		<background>0</background>
+		<frame>1</frame>
+		<message>1</message>
+		<peakLine>1</peakLine>
+		<grid>1</grid>
+	<update>1</update>
+	</flags>
+	<params>
+		<threshOffsetPx>0</threshOffsetPx>
+		<offsetScale>1</offsetScale>
+		<peakBandPercent>0</peakBandPercent>
+		<emaAlphaPercent>0.8</emaAlphaPercent>
+		<steps>4</steps>
+		<amplify>2.33929</amplify>
+	<noiseThresh>0</noiseThresh>
+	</params>
+<HistogramPixels/>
+<labels>
+		<UnknownName> fps: 1390.6</UnknownName>
+	</labels>
+</HistogramPixels>
