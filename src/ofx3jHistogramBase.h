@@ -10,11 +10,7 @@
 	20190221
 		some clean up
 		example with ofPixels
-		no abstract class template yet, but maybe not necessary
 
-	todo
-		have to get rid of some sliders that dont belong here
-		improve grid drawing, take off the loop
 */
 
 #include "ofMain.h"
