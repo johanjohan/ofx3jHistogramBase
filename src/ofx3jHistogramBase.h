@@ -4,16 +4,17 @@
 	3j // https://1001suns.com/
 
 	20190218
-	refactor
-	integrate threshOffsetPx to not fill hist on paused input. it did fill up on the angleOffset without any motion
+		refactor
+		integrate threshOffsetPx to not fill hist on paused input. it did fill up on the angleOffset without any motion
 
 	20190221
-	some clean up
-	example with ofPixels
-	no abstract class template yet, but maybe not necessary
+		some clean up
+		example with ofPixels
+		no abstract class template yet, but maybe not necessary
 
 	todo
-	have to get rid of some sliders that dont belong here
+		have to get rid of some sliders that dont belong here
+		improve grid drawing, take off the loop
 */
 
 #include "ofMain.h"
