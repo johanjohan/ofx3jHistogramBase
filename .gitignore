@@ -105,3 +105,11 @@ Desktop.ini
 *.log
 *.sql
 *.sqlite
+
+#3j
+*.sln
+*.VC.db
+*.vcxproj
+*.vcxproj.*
+.vs/
+
