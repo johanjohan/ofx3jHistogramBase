@@ -19,11 +19,11 @@ ofxGui
 
 Compatibility
 ------------
-0.9.9 / 0.10.1
+0.9.8 / 0.10.1
 
 Known issues
 ------------
-None yet
+None
 
 Version history
 ------------
