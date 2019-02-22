@@ -61,19 +61,16 @@ void  ofx3jHistogramBase::draw(
 			numSegments = 8;
 			p0.set(x, y + h);
 			p1.set(p0.x, p0.y - h / 6);
-			for (size_t i = 0; i <= numSegments; ++i){
-				if (i % 2){
-					p0.x = p1.x = x + i * w / numSegments;
-					ofDrawLine(p0, p1);
-				}
-
+			for (size_t i = 1; i <= numSegments; i += 2) {
+				p0.x = p1.x = x + i * w / numSegments;
+				ofDrawLine(p0, p1);
 			}
 
 			// quart
 			numSegments = 4;
 			p0.set(x, y + h);
 			p1.set(p0.x, p0.y - h / 3);
-			for (size_t i = 0; i <= numSegments; ++i){
+			for (size_t i = 0; i <= numSegments; ++i) {
 				p0.x = p1.x = x + i * w / numSegments;
 				ofDrawLine(p0, p1);
 			}
@@ -104,7 +101,7 @@ void  ofx3jHistogramBase::draw(
 
 			// bin bars
 			float val01 = ofMap(hist.data[iOff], 0, hist.maxValueLimit, 0, 1); // normalize
-			if (val01 >= gui.params.noiseThresh) 
+			if (val01 >= gui.params.noiseThresh)
 			{
 				assert(gui.params.amplify.get() > 0);
 				val01 = powf(val01, 1.f / gui.params.amplify.get()); // amplify
@@ -116,7 +113,7 @@ void  ofx3jHistogramBase::draw(
 			if (gui.flags.peakLine) { // vert
 				if (iOff == getIndexAtMaxValue()) {
 					ofSetColor(c, 0.9 * 255);
-					ofDrawLine(ofPoint(p1.x + xStep/2, p1.y - h * 0.9), ofPoint(p1.x + xStep / 2, p1.y - h)); //  + xStep/2 keep in middle of rect
+					ofDrawLine(ofPoint(p1.x + xStep / 2, p1.y - h * 0.9), ofPoint(p1.x + xStep / 2, p1.y - h)); //  + xStep/2 keep in middle of rect
 				}
 			}
 
