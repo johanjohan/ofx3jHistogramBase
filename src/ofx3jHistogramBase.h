@@ -16,6 +16,12 @@
 
 */
 
+/*
+	TODO
+		should be a way for converting indexAtMaxValue into values
+			ie the opposite of mapToIndex(float value, float inputMin, float inputMax)
+*/
+
 #include "ofMain.h" 
 #include "ofxGui.h"
 
@@ -46,13 +52,14 @@ protected:
 		ofxPanel				panel;
 
 		struct Labels {
-			ofParameter<string>	label1 = ofParameter<string>("label1");
-			ofParameter<string>	label2 = ofParameter<string>("label2");
+			ofParameter<string>	filename = ofParameter<string>("filename", "...");
+			ofParameter<string>	label1 = ofParameter<string>("label1", "...");
+			ofParameter<string>	label2 = ofParameter<string>("label2", "...");
 		};
 		Labels labels;
 
 		ofParameterGroup		gLabels{ "labels", // ctor not yet called for id++
-			labels.label1, labels.label2
+			labels.filename, labels.label1, labels.label2
 		};
 
 		struct Flags {
@@ -74,25 +81,29 @@ protected:
 		struct Params {
 			ofParameter<int>	steps = ofParameter<int>("steps", 1, 1, 32);
 			ofParameter<float>  amplify = ofParameter<float>("amplify", 1, 0.25, 10);
-			ofParameter<float>  noiseThresh = ofParameter<float>("noiseThresh", 0, 0, 0.5);
+			ofParameter<float>  noiseThreshDrawing = ofParameter<float>("noiseThreshDrawing", 0, 0, 0.5); // in Drawing
 		};
 		Params params;
 
 		ofParameterGroup		gParams{ "params",
-			params.steps, params.amplify, params.noiseThresh
+			params.steps, params.amplify, params.noiseThreshDrawing
 		};
+
 
 		void setup(const string &_name = "HistogramBaseV2", const int &_width = 200) { // drawing artifacts below 200
 
 			const string filename = _name + "_" + ofToString(id, 0, 3, '0') + ".xml";
+			//ofLogNotice(__FUNCTION__) << "filename: " << ofFilePath::getAbsolutePath(filename);
 
-			panel.clear();
+			//panel.clear();
 			panel.setup("", filename, 10, 10); // bug ""
 			panel.setName(_name);
 
 			panel.maximizeAll();
 			panel.setSize(_width, 0);
 			panel.setDefaultWidth(_width);
+
+			labels.filename = filename;
 
 			panel.add(gLabels);
 			panel.add(gFlags);
@@ -109,11 +120,19 @@ protected:
 		}
 	};
 
+	// need to resetValueLimit after change of steps, as the absolute limit is different
+	void onChangeSteps(int &_value) {
+		ofLogNotice(__FUNCTION__) << _value;
+		resetValueLimit();
+	}
+
 public:
 
 	ofx3jHistogramBase(const size_t &_cnt) {
 		setSize(_cnt);
 		gui.setup(__func__);
+
+		gui.params.steps.addListener(this, &ofx3jHistogramBase::onChangeSteps);
 	}
 
 	~ofx3jHistogramBase() {}
@@ -125,9 +144,13 @@ public:
 	void setValueLimit(const int &_maxBinValue, const bool &_bReset = false) {
 		if (_bReset) resetValueLimit();
 		hist.maxValueLimit = std::max(hist.maxValueLimit, _maxBinValue); // adpative
+		if (getValueLimit() == 0){
+			ofLogWarning(__FUNCTION__) << "getValueLimit() == 0: " << getValueLimit();
+		}
+		//assert(hist.maxValueLimit > 0);
 	}
 
-	void resetValueLimit() { hist.maxValueLimit = 0; }
+	void resetValueLimit() { hist.maxValueLimit = 0; } // 0 can trigger mistake in ofMap as inputMax
 
 	int getValueLimit() { return hist.maxValueLimit; }
 

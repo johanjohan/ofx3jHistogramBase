@@ -17,6 +17,11 @@ void  ofx3jHistogramBase::draw(
 		return;
 	}
 
+	if (getValueLimit() == 0) {
+		ofLogWarning(__FUNCTION__) << "getValueLimit() == 0 " << ofGetTimestampString();
+		return;
+	}
+
 	int w = _w - 2 * _border;
 	int h = _h - 2 * _border;
 	int x = _x + _border;
@@ -101,7 +106,7 @@ void  ofx3jHistogramBase::draw(
 
 			// bin bars
 			float val01 = ofMap(hist.data[iOff], 0, hist.maxValueLimit, 0, 1); // normalize
-			if (val01 >= gui.params.noiseThresh)
+			if (val01 >= gui.params.noiseThreshDrawing)
 			{
 				assert(gui.params.amplify.get() > 0);
 				val01 = powf(val01, 1.f / gui.params.amplify.get()); // amplify
