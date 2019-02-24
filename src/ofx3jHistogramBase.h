@@ -5,7 +5,7 @@
 
 	20190218
 		refactor
-		integrate threshOffsetPx to not fill hist on paused input. it did fill up on the angleOffset without any motion
+		integrate offsetPixelsThresh to not fill hist on paused input. it did fill up on the angleOffset without any motion
 
 	20190221
 		some clean up
