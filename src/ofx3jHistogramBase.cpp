@@ -7,7 +7,7 @@ void  ofx3jHistogramBase::draw(
 	const int		&_y,
 	const int		&_w,
 	const int		&_h,
-	const int		&_border,
+	const int		&__border,
 	const ofColor	&_colorBin,
 	const ofColor	&_colorFrame,
 	const ofColor	&_colorGrid
@@ -23,11 +23,12 @@ void  ofx3jHistogramBase::draw(
 	}
 
 	//gui.labels.totalValue = ofToString(hist.totalValue);
-
-	int w = _w - 2 * _border;
-	int h = _h - 2 * _border;
-	int x = _x + _border;
-	int y = _y + _border;
+	int border = __border + getBitmapFontWidth("123") / 1.25;
+	int w = _w - 2 * border;
+	int h = _h - 2 * border;
+	//h -= getBitmapFontHeight() + getBitmapFontSpace(); // for x axis labels
+	int x = _x + border;
+	int y = _y + border;
 	assert(hist.data.size() > 0);
 	float xStep = w / float(hist.data.size() - 0);
 
@@ -83,6 +84,28 @@ void  ofx3jHistogramBase::draw(
 			}
 		}
 
+		// labels
+		if (true)
+		{
+			int hh = getBitmapFontHeight() + getBitmapFontSpace() + getBitmapFontSpace();
+			ofSetColor(ofColor::white);
+			ofPoint p;
+			string s;
+			float f;
+			float wid;
+
+			for (float f = 0.0f; f <= 1.0f; f += 0.25f)
+			{
+				size_t index = f * (getSize() - 1);
+				index = wrap<size_t>(index + hist.indexDrawStart, 0, getSize()-1);
+
+				s = ofToString(mapIndexToValue(index));
+				wid = getBitmapFontWidth(s);
+				p.set(x + f * w - wid / 2, y + h + hh);
+				ofDrawBitmapString(s, p);
+			}
+		}
+
 		// plot bins
 		float maxVal = 0;
 		ofPoint p1(x, y + h);
@@ -93,7 +116,7 @@ void  ofx3jHistogramBase::draw(
 			size_t iOff = wrap<size_t>(
 				i + hist.indexDrawStart,
 				0,
-				hist.data.size()
+				getSize() - 1
 				);
 
 			if (gui.flags.hue) {
@@ -161,8 +184,8 @@ void  ofx3jHistogramBase::draw(
 			ofSetColor(_colorFrame);
 			ofDrawBitmapStringHighlight(
 				ss.str(),
-				_x + 2 + 5 + _border,
-				_y + 0 + 5 + _border + 12
+				_x + 2 + 5 + border,
+				_y + 0 + 5 + border + 12
 			);
 		}
 	}

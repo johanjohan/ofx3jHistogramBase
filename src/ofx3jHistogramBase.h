@@ -19,7 +19,7 @@
 /*
 	TODO
 		should be a way for converting indexAtMaxValue into values
-			ie the opposite of mapToIndex(float value, float inputMin, float inputMax)
+			ie the opposite of mapValueToIndex(float value, float inputMin, float inputMax)
 			--> should store the map Range
 
 		count inactive ones so we can see whether the movement comes from a small fraction of the image
@@ -48,6 +48,12 @@ protected:
 		float					activePercent = 0;
 		size_t					indexAtMaxValue = 0;	// index of max oeak in bins [0...hist.indexAtMaxValue...hist.data.size()-1]
 		size_t					indexDrawStart = 0;		// may plot starting from green instead of red...
+
+		struct InputRange {
+			float min;
+			float max;
+		};
+		InputRange inputRange;
 	};
 	Hist hist;
 
@@ -64,13 +70,14 @@ protected:
 		struct Labels {
 			ofParameter<string>	filename = ofParameter<string>("filename", "...");
 			ofParameter<string>	activePercent = ofParameter<string>("activePercent", "...");
+			ofParameter<string>	mappedIndex = ofParameter<string>("mappedIndex", "...");
 			ofParameter<string>	label1 = ofParameter<string>("label1", "...");
 			ofParameter<string>	label2 = ofParameter<string>("label2", "...");
 		};
 		Labels labels;
 
 		ofParameterGroup		gLabels{ "labels", // ctor not yet called for id++
-			labels.filename, labels.activePercent, labels.label1, labels.label2
+			labels.filename, labels.activePercent, labels.mappedIndex, labels.label1, labels.label2
 		};
 
 		struct Flags {
@@ -85,7 +92,7 @@ protected:
 		};
 		Flags flags;
 
-		ofParameterGroup		gFlags{ "flags", // ctor not yet called for id++
+		ofParameterGroup		gFlags{ "flags",
 			flags.update, flags.draw, flags.hue, flags.background, flags.frame, flags.message, flags.peakLine, flags.grid
 		};
 
@@ -100,7 +107,6 @@ protected:
 		ofParameterGroup		gParams{ "params",
 			params.activePercentThresh, params.steps, params.amplify, params.noiseThreshDrawing
 		};
-
 
 		void setup(const string &_name = "HistogramBaseV2", const int &_width = 200) { // drawing artifacts below 200
 
@@ -184,6 +190,13 @@ public:
 		return hist.indexAtMaxValue;
 	}
 
+	/*
+		maps current IndexAtMaxValue to original input range
+	*/
+	float getMappedIndexAtMaxValue() {
+		return mapIndexToValue(getIndexAtMaxValue());
+	}
+
 	float getIndexPercentAtMaxValue() {
 		return getIndexAtMaxValue() / float(getSize() - 1);
 	}
@@ -249,9 +262,16 @@ protected:
 		//cout << (__FUNCTION__) << ": hist.data.size(): " << hist.data.size() << endl;
 	}
 
-	size_t mapToIndex(float value, float inputMin, float inputMax) {
+	size_t mapValueToIndex(float value, float inputMin, float inputMax) {
 		//ofLogNotice(__FUNCTION__) << "mm: " << inputMin << " | " << inputMax;
+		hist.inputRange.min = inputMin;
+		hist.inputRange.max = inputMax;
 		return roundf(ofMap(value, inputMin, inputMax, 0, getSize() - 1, true));
+	}
+
+	// and back
+	float mapIndexToValue(const size_t &_index) {
+		return ofMap(_index, 0, getSize() - 1, hist.inputRange.min, hist.inputRange.max, true);
 	}
 
 	void findMaxValue() {
@@ -263,6 +283,8 @@ protected:
 			}
 			//hist.totalValue += hist.data[i];
 		}
+
+		gui.labels.mappedIndex = ofToString(getMappedIndexAtMaxValue(), 2);
 
 		// find activePercent
 		int activeThresh = gui.params.activePercentThresh * getValueLimit(); // absolute
@@ -296,6 +318,21 @@ protected:
 			return value - cycle * floorf((value - from) / cycle);
 		}
 	}
+
+	// ofBitMapFont dims
+	/*
+	bitmap: 360 --> 22x9
+	1 letter = 6x9
+	space = 2x9
+	*/
+	int getBitmapFontWidth() { return 6; }
+	int getBitmapFontHeight() { return 9; }
+	int getBitmapFontSpace() { return 2; }
+
+	int getBitmapFontWidth(const string &_s) {
+		return _s.size() *  getBitmapFontWidth() + (_s.size() - 1) * getBitmapFontSpace();
+	}
+
 
 
 }; // c ofx3jHistogramBase
