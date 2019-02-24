@@ -20,6 +20,13 @@
 	TODO
 		should be a way for converting indexAtMaxValue into values
 			ie the opposite of mapToIndex(float value, float inputMin, float inputMax)
+			--> should store the map Range
+
+		count inactive ones so we can see whether the movement comes from a small fraction of the image
+			set a threshold01
+				count the ones below that threshold01 and consider them being inactive
+
+
 */
 
 #include "ofMain.h" 
@@ -35,7 +42,10 @@ protected:
 
 	struct Hist {
 		vector<int>				data;					// bins
-		int						maxValueLimit = 0;		// all in 1 bin would amount to hist.maxValueLimit = w * h, for normalizing
+		int						maxValueLimit = 1;		// all in 1 bin would amount to hist.maxValueLimit = w * h, for normalizing
+		//int						totalValue = 0;			// sum of all active bins actually same as FULL maxValueLimit 
+		//int						activeValue = 0;			// sum of all active above thresh
+		float					activePercent = 0;
 		size_t					indexAtMaxValue = 0;	// index of max oeak in bins [0...hist.indexAtMaxValue...hist.data.size()-1]
 		size_t					indexDrawStart = 0;		// may plot starting from green instead of red...
 	};
@@ -53,13 +63,14 @@ protected:
 
 		struct Labels {
 			ofParameter<string>	filename = ofParameter<string>("filename", "...");
+			ofParameter<string>	activePercent = ofParameter<string>("activePercent", "...");
 			ofParameter<string>	label1 = ofParameter<string>("label1", "...");
 			ofParameter<string>	label2 = ofParameter<string>("label2", "...");
 		};
 		Labels labels;
 
 		ofParameterGroup		gLabels{ "labels", // ctor not yet called for id++
-			labels.filename, labels.label1, labels.label2
+			labels.filename, labels.activePercent, labels.label1, labels.label2
 		};
 
 		struct Flags {
@@ -79,6 +90,7 @@ protected:
 		};
 
 		struct Params {
+			ofParameter<float>	activePercentThresh = ofParameter<float>("activePercentThresh", 0, 0, 1);
 			ofParameter<int>	steps = ofParameter<int>("steps", 1, 1, 32);
 			ofParameter<float>  amplify = ofParameter<float>("amplify", 1, 0.25, 10);
 			ofParameter<float>  noiseThreshDrawing = ofParameter<float>("noiseThreshDrawing", 0, 0, 0.5); // in Drawing
@@ -86,7 +98,7 @@ protected:
 		Params params;
 
 		ofParameterGroup		gParams{ "params",
-			params.steps, params.amplify, params.noiseThreshDrawing
+			params.activePercentThresh, params.steps, params.amplify, params.noiseThreshDrawing
 		};
 
 
@@ -141,16 +153,22 @@ public:
 
 	size_t getSize() { return hist.data.size(); }
 
-	void setValueLimit(const int &_maxBinValue, const bool &_bReset = false) {
+	// should possibly force to be absolute
+	void setValueLimit(const int &_maxValueLimit, const bool &_bReset = false) {
+#if 0
 		if (_bReset) resetValueLimit();
-		hist.maxValueLimit = std::max(hist.maxValueLimit, _maxBinValue); // adpative
-		if (getValueLimit() == 0){
+		hist.maxValueLimit = std::max(hist.maxValueLimit, _maxValueLimit); // adpative
+
+#else
+		hist.maxValueLimit = _maxValueLimit; // absolute
+#endif
+		if (getValueLimit() == 0) {
 			ofLogWarning(__FUNCTION__) << "getValueLimit() == 0: " << getValueLimit();
 		}
-		//assert(hist.maxValueLimit > 0);
+		//assert(hist.maxValueLimit > 0);	
 	}
 
-	void resetValueLimit() { hist.maxValueLimit = 0; } // 0 can trigger mistake in ofMap as inputMax
+	void resetValueLimit() { hist.maxValueLimit = 1; } // 0 can trigger mistake in ofMap as inputMax
 
 	int getValueLimit() { return hist.maxValueLimit; }
 
@@ -232,16 +250,32 @@ protected:
 	}
 
 	size_t mapToIndex(float value, float inputMin, float inputMax) {
+		//ofLogNotice(__FUNCTION__) << "mm: " << inputMin << " | " << inputMax;
 		return roundf(ofMap(value, inputMin, inputMax, 0, getSize() - 1, true));
 	}
 
 	void findMaxValue() {
+		//hist.totalValue = hist.data[0];
 		hist.indexAtMaxValue = 0; // could use as a low cut filter...
 		for (size_t i = hist.indexAtMaxValue + 1; i < hist.data.size(); i++) {
 			if (hist.data[i] > hist.data[hist.indexAtMaxValue]) {
 				hist.indexAtMaxValue = i;
 			}
+			//hist.totalValue += hist.data[i];
 		}
+
+		// find activePercent
+		int activeThresh = gui.params.activePercentThresh * getValueLimit(); // absolute
+		int activeValue = 0;
+		for (size_t i = 0; i < hist.data.size(); i++)
+		{
+			if (hist.data[i] >= activeThresh) // > hist.data[i] > thresh
+			{
+				activeValue += hist.data[i] - activeThresh;
+			}
+		}
+		hist.activePercent = activeValue / float(getValueLimit());
+		gui.labels.activePercent = ofToString(hist.activePercent, 2, 4, ' ');
 	}
 
 	template <typename T>

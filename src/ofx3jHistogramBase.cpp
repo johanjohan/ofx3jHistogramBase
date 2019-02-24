@@ -22,6 +22,8 @@ void  ofx3jHistogramBase::draw(
 		return;
 	}
 
+	//gui.labels.totalValue = ofToString(hist.totalValue);
+
 	int w = _w - 2 * _border;
 	int h = _h - 2 * _border;
 	int x = _x + _border;
@@ -121,7 +123,6 @@ void  ofx3jHistogramBase::draw(
 					ofDrawLine(ofPoint(p1.x + xStep / 2, p1.y - h * 0.9), ofPoint(p1.x + xStep / 2, p1.y - h)); //  + xStep/2 keep in middle of rect
 				}
 			}
-
 		}
 
 		if (gui.flags.peakLine) // horz
