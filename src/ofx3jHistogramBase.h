@@ -97,7 +97,7 @@ protected:
 		};
 
 		struct Params {
-			ofParameter<float>	activePercentThresh = ofParameter<float>("activePercentThresh", 0, 0, 1);
+			ofParameter<float>	activePercentThresh = ofParameter<float>("activePercentThresh", 0, 0, 1); // todo make useful
 			ofParameter<int>	steps = ofParameter<int>("steps", 1, 1, 32);
 			ofParameter<float>  amplify = ofParameter<float>("amplify", 1, 0.25, 10);
 			ofParameter<float>  noiseThreshDrawing = ofParameter<float>("noiseThreshDrawing", 0, 0, 0.5); // in Drawing
@@ -105,7 +105,7 @@ protected:
 		Params params;
 
 		ofParameterGroup		gParams{ "params",
-			params.activePercentThresh, params.steps, params.amplify, params.noiseThreshDrawing
+			/*params.activePercentThresh,*/ params.steps, params.amplify, params.noiseThreshDrawing
 		};
 
 		void setup(const string &_name = "HistogramBaseV2", const int &_width = 200) { // drawing artifacts below 200
@@ -160,7 +160,7 @@ public:
 	size_t getSize() { return hist.data.size(); }
 
 	// should possibly force to be absolute
-	void setValueLimit(const int &_maxValueLimit, const bool &_bReset = false) {
+	void setValueLimit(const int &_maxValueLimit /*, const bool &_bReset = false*/) {
 #if 0
 		if (_bReset) resetValueLimit();
 		hist.maxValueLimit = std::max(hist.maxValueLimit, _maxValueLimit); // adpative
@@ -171,7 +171,6 @@ public:
 		if (getValueLimit() == 0) {
 			ofLogWarning(__FUNCTION__) << "getValueLimit() == 0: " << getValueLimit();
 		}
-		//assert(hist.maxValueLimit > 0);	
 	}
 
 	void resetValueLimit() { hist.maxValueLimit = 1; } // 0 can trigger mistake in ofMap as inputMax

@@ -99,7 +99,7 @@ void  ofx3jHistogramBase::draw(
 				size_t index = f * (getSize() - 1);
 				index = wrap<size_t>(index + hist.indexDrawStart, 0, getSize()-1);
 
-				s = ofToString(mapIndexToValue(index));
+				s = ofToString(mapIndexToValue(index),1);
 				wid = getBitmapFontWidth(s);
 				p.set(x + f * w - wid / 2, y + h + hh);
 				ofDrawBitmapString(s, p);

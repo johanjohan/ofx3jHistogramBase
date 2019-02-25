@@ -12,17 +12,9 @@ void ofApp::setup(){
 
 	// these are extra, do as you like
 	//histogram.setIndexDrawStart(180); // suppose you want to watch reds and want to shift the drawing by 180 degrees so they dont split at 0/360
-	histogram.gui.params.steps.addListener(this, &ofApp::onChangeSteps); // a new step will change ValueLimit()
 	//histogram.gui.panel.getGroup("flags").minimize();
 
 }
-
-//--------------------------------------------------------------
-void ofApp::onChangeSteps(int &_value) {
-	ofLogNotice(__FUNCTION__) << _value;
-	histogram.resetValueLimit(); // drawing depends on normalizing via ValueLimit(), steps influences exactly that...
-}
-
 //--------------------------------------------------------------
 void ofApp::update(){
 	videoGrab.update();
