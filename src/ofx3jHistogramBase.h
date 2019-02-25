@@ -70,7 +70,7 @@ protected:
 		struct Labels {
 			ofParameter<string>	filename = ofParameter<string>("filename", "...");
 			ofParameter<string>	activePercent = ofParameter<string>("activePercent", "...");
-			ofParameter<string>	mappedIndex = ofParameter<string>("mappedIndex", "...");
+			ofParameter<string>	mappedIndex = ofParameter<string>("mappedIndex", "..."); // at max value
 			ofParameter<string>	label1 = ofParameter<string>("label1", "...");
 			ofParameter<string>	label2 = ofParameter<string>("label2", "...");
 		};
