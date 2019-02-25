@@ -27,7 +27,7 @@ public:
 
 		const int w = _new.getWidth();
 		const int h = _new.getHeight();
-		const int step = gui.params.steps;
+		const int step = gui.params.step;
 		assert(step > 0);
 
 		zeroHistograms(getSize());

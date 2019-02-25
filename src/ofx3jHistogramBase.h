@@ -18,10 +18,6 @@
 
 /*
 	TODO
-		should be a way for converting indexAtMaxValue into values
-			ie the opposite of mapValueToIndex(float value, float inputMin, float inputMax)
-			--> should store the map Range
-
 		count inactive ones so we can see whether the movement comes from a small fraction of the image
 			set a threshold01
 				count the ones below that threshold01 and consider them being inactive
@@ -43,8 +39,6 @@ protected:
 	struct Hist {
 		vector<int>				data;					// bins
 		int						maxValueLimit = 1;		// all in 1 bin would amount to hist.maxValueLimit = w * h, for normalizing
-		//int						totalValue = 0;			// sum of all active bins actually same as FULL maxValueLimit 
-		//int						activeValue = 0;			// sum of all active above thresh
 		float					activePercent = 0;
 		size_t					indexAtMaxValue = 0;	// index of max oeak in bins [0...hist.indexAtMaxValue...hist.data.size()-1]
 		size_t					indexDrawStart = 0;		// may plot starting from green instead of red...
@@ -98,22 +92,21 @@ protected:
 
 		struct Params {
 			ofParameter<float>	activePercentThresh = ofParameter<float>("activePercentThresh", 0, 0, 1); // todo make useful
-			ofParameter<int>	steps = ofParameter<int>("steps", 1, 1, 32);
+			ofParameter<int>	step = ofParameter<int>("step", 1, 1, 32);
 			ofParameter<float>  amplify = ofParameter<float>("amplify", 1, 0.25, 10);
 			ofParameter<float>  noiseThreshDrawing = ofParameter<float>("noiseThreshDrawing", 0, 0, 0.5); // in Drawing
 		};
 		Params params;
 
 		ofParameterGroup		gParams{ "params",
-			/*params.activePercentThresh,*/ params.steps, params.amplify, params.noiseThreshDrawing
+			/*params.activePercentThresh,*/ params.step, params.amplify, params.noiseThreshDrawing
 		};
 
 		void setup(const string &_name = "HistogramBaseV2", const int &_width = 200) { // drawing artifacts below 200
 
 			const string filename = _name + "_" + ofToString(id, 0, 3, '0') + ".xml";
-			//ofLogNotice(__FUNCTION__) << "filename: " << ofFilePath::getAbsolutePath(filename);
 
-			//panel.clear();
+			panel.clear();
 			panel.setup("", filename, 10, 10); // bug ""
 			panel.setName(_name);
 
@@ -138,8 +131,8 @@ protected:
 		}
 	};
 
-	// need to resetValueLimit after change of steps, as the absolute limit is different
-	void onChangeSteps(int &_value) {
+	// need to resetValueLimit after change of step, as the absolute limit has changed
+	void onChangeStep(int &_value) {
 		ofLogNotice(__FUNCTION__) << _value;
 		resetValueLimit();
 	}
@@ -150,7 +143,7 @@ public:
 		setSize(_cnt);
 		gui.setup(__func__);
 
-		gui.params.steps.addListener(this, &ofx3jHistogramBase::onChangeSteps);
+		gui.params.step.addListener(this, &ofx3jHistogramBase::onChangeStep);
 	}
 
 	~ofx3jHistogramBase() {}
@@ -159,23 +152,16 @@ public:
 
 	size_t getSize() { return hist.data.size(); }
 
-	// should possibly force to be absolute
 	void setValueLimit(const int &_maxValueLimit /*, const bool &_bReset = false*/) {
-#if 0
-		if (_bReset) resetValueLimit();
-		hist.maxValueLimit = std::max(hist.maxValueLimit, _maxValueLimit); // adpative
-
-#else
 		hist.maxValueLimit = _maxValueLimit; // absolute
-#endif
 		if (getValueLimit() == 0) {
 			ofLogWarning(__FUNCTION__) << "getValueLimit() == 0: " << getValueLimit();
 		}
 	}
 
-	void resetValueLimit() { hist.maxValueLimit = 1; } // 0 can trigger mistake in ofMap as inputMax
-
 	int getValueLimit() { return hist.maxValueLimit; }
+
+	void resetValueLimit() { hist.maxValueLimit = 1; } // 0 can trigger mistake in ofMap as inputMax
 
 	int getMaxValue() {
 		return getValueAtIndex(getIndexAtMaxValue());
@@ -206,13 +192,13 @@ public:
 	}
 
 	float getValuePercentAtIndex(size_t _index) {
+		assert(getValueLimit() > 0);
 		return getValueAtIndex(_index) / float(getValueLimit());
 	}
 
-	void setIndexDrawStart(const size_t &_startBinIndex) { // incase we want to start drawing from another value than 0
+	void setIndexDrawStart(const size_t &_startBinIndex) { // in case we want to start drawing from another value than 0
 		assert(_startBinIndex < getSize());
 		hist.indexDrawStart = _startBinIndex;
-		//ofLogNotice(__FUNCTION__) << hist.indexDrawStart;
 	}
 
 	void setMessage(const string &_msg) {
@@ -274,13 +260,11 @@ protected:
 	}
 
 	void findMaxValue() {
-		//hist.totalValue = hist.data[0];
 		hist.indexAtMaxValue = 0; // could use as a low cut filter...
 		for (size_t i = hist.indexAtMaxValue + 1; i < hist.data.size(); i++) {
 			if (hist.data[i] > hist.data[hist.indexAtMaxValue]) {
 				hist.indexAtMaxValue = i;
 			}
-			//hist.totalValue += hist.data[i];
 		}
 
 		gui.labels.mappedIndex = ofToString(getMappedIndexAtMaxValue(), 2);
@@ -320,9 +304,9 @@ protected:
 
 	// ofBitMapFont dims
 	/*
-	bitmap: 360 --> 22x9
-	1 letter = 6x9
-	space = 2x9
+		bitmap: 360 --> 22x9
+		1 letter = 6x9
+		space = 2x9
 	*/
 	int getBitmapFontWidth() { return 6; }
 	int getBitmapFontHeight() { return 9; }

@@ -15,12 +15,19 @@
 		<offsetScale>1</offsetScale>
 		<peakBandPercent>0</peakBandPercent>
 		<emaAlphaPercent>0.8</emaAlphaPercent>
-		<steps>4</steps>
+		<steps>1</steps>
 		<amplify>1.39413</amplify>
 	<noiseThresh>0</noiseThresh>
+	<noiseThreshDrawing>0</noiseThreshDrawing>
+	<step>1</step>
 	</params>
 <HistogramPixels/>
 <labels>
 		<UnknownName>fps: 1691.1Hz</UnknownName>
+	<filename>HistogramPixels_001.xml</filename>
+		<activePercent>1.00</activePercent>
+		<mappedIndex>30.00</mappedIndex>
+		<label1>max: 0.22 of 1.0</label1>
+		<label2>fps: 1021.6Hz</label2>
 	</labels>
 </HistogramPixels>
