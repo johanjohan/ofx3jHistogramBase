@@ -11,7 +11,7 @@ void ofApp::setup(){
 	histogram.setup();
 
 	// these are extra, do as you like
-	//histogram.setIndexDrawStart(180); // suppose you want to watch reds and want to shift the drawing by 180 degrees so they dont split at 0/360
+	histogram.setIndexDrawStart(180); // suppose you want to watch reds and want to shift the drawing by 180 degrees so they dont split at 0/360
 	//histogram.gui.panel.getGroup("flags").minimize();
 
 }
@@ -21,7 +21,6 @@ void ofApp::update(){
 	if (videoGrab.isFrameNew())
 	{
 		histogram.update(videoGrab.getPixels());
-		//histogram.setIndexDrawStart(size_t(ofGetElapsedTimef() / .333f) % histogram.getSize()); // slide for the fun of it
 	}
 }
 
